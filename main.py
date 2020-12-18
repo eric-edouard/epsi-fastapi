@@ -15,6 +15,15 @@ todos = [
     },
 ]
 
+
+@app.route('/')
+def index():
+    return "<h1>Welcome to our server !</h1>"
+
+@app.route('/todos')
+def get_todos():
+    return jsonify(todos)
+
 @app.route('/todo/', methods=['GET'])
 def get_todo_details():
     id = int(request.args.get("id")) # check if number is correct before converting to int
@@ -23,6 +32,19 @@ def get_todo_details():
         if todo["id"] == id:
             return jsonify(todo)
     abort(404)
+
+
+@app.route('/todo/', methods=['POST'])
+def add_todo():
+    todo = request.form.get('todo')
+    print(f'Adding ${todo} to the list...')
+    id = len(todos)
+    todos.append({
+        "id": id,
+        "task": todo,
+        "isDone": False
+    })
+    return jsonify(todos)
 
 @app.route('/todo/', methods=['POST'])
 def check_todo():
@@ -39,30 +61,6 @@ def check_todo():
             todo["isDone"] = isDone
             return jsonify(todo)
     abort(404)
-
-
-@app.route('/')
-def index():
-    return "<h1>Welcome to our server !</h1>"
-
-
-@app.route('/todos')
-def get_todos():
-    return jsonify(todos)
-
-
-@app.route('/todo/', methods=['POST'])
-def add_todo():
-    todo = request.form.get('todo')
-    print(f'Adding ${todo} to the list...')
-    id = len(todos)
-    todos.append({
-        "id": id,
-        "task": todo,
-        "isDone": False
-    })
-    return jsonify(todos)
-
 
 
 
